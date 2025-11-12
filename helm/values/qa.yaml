@@ -1,0 +1,27 @@
+name: frontend-qa
+namespace: bankapp-qa
+environment: qa
+
+replicaCount: 2
+
+image:
+  repository: frontend
+  tag: qa-latest
+  pullPolicy: Never
+
+containerPort: 8080
+
+service:
+  type: ClusterIP
+  port: 8080
+
+ingress:
+  host: frontend.qa.bankapp.local
+
+resources:
+  limits:
+    cpu: "500m"
+    memory: "256Mi"
+  requests:
+    cpu: "250m"
+    memory: "128Mi"

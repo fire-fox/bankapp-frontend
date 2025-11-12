@@ -1,15 +1,21 @@
 import { HttpInterceptorFn } from '@angular/common/http';
+import { inject } from '@angular/core';
+import { KeycloakService } from 'keycloak-angular';
+import { from, switchMap } from 'rxjs';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  // Get token from localStorage (in real app, use a service)
-  const token = localStorage.getItem('auth_token');
+  const keycloak = inject(KeycloakService);
 
-  if (token) {
-    const clonedRequest = req.clone({
-      headers: req.headers.set('Authorization', `Bearer ${token}`)
-    });
-    return next(clonedRequest);
-  }
-
-  return next(req);
+  // Get token from Keycloak
+  return from(keycloak.getToken()).pipe(
+    switchMap(token => {
+      if (token) {
+        const clonedRequest = req.clone({
+          headers: req.headers.set('Authorization', `Bearer ${token}`)
+        });
+        return next(clonedRequest);
+      }
+      return next(req);
+    })
+  );
 };

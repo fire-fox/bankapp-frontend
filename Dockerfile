@@ -2,6 +2,9 @@
 # Stage 1: Build Angular application
 FROM node:22-alpine AS builder
 
+# Accept build argument for environment (dev, qa, prod)
+ARG BUILD_ENV=prod
+
 WORKDIR /app
 
 # Copy package files
@@ -13,8 +16,8 @@ RUN npm ci --legacy-peer-deps
 # Copy source code
 COPY . .
 
-# Build for production with optimizations
-RUN npm run build:prod
+# Build for specified environment
+RUN npm run build:${BUILD_ENV}
 
 # Stage 2: Serve with Nginx
 FROM nginx:1.28.0-alpine

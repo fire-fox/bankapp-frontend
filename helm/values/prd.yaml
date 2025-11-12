@@ -1,0 +1,27 @@
+name: frontend-prd
+namespace: bankapp-prd
+environment: production
+
+replicaCount: 2
+
+image:
+  repository: frontend
+  tag: prd-latest
+  pullPolicy: Never
+
+containerPort: 8080
+
+service:
+  type: ClusterIP
+  port: 8080
+
+ingress:
+  host: frontend.prd.bankapp.local
+
+resources:
+  limits:
+    cpu: "1000m"
+    memory: "512Mi"
+  requests:
+    cpu: "500m"
+    memory: "256Mi"
